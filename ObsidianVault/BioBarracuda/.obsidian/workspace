@@ -1,0 +1,95 @@
+{
+  "main": {
+    "id": "1d5dc1cea5279a87",
+    "type": "split",
+    "children": [
+      {
+        "id": "fc45351136ce5670",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "TODO.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ae4c0a8580f2e956",
+    "type": "split",
+    "children": [
+      {
+        "id": "84128f73c40e4a56",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "04527ca036e9e491",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "bcb37a148c59d729",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "49ce1374f13664fe",
+    "type": "split",
+    "children": [
+      {
+        "id": "c9774f8b89db8779",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "035fa4a5e8c7ebb7",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "TODO.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "fc45351136ce5670",
+  "lastOpenFiles": [
+    "TODO.md",
+    "Idea Scratchpad.md"
+  ]
+}

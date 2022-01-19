@@ -1,0 +1,66 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Objects/Barracuda.gd" type="Script" id=1]
+[ext_resource path="res://Objects/BodySegment.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Objects/BodyJoint.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Objects/Jaw.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Objects/BodyTail.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Assets/Barracuda/HeadTop.png" type="Texture" id=6]
+[ext_resource path="res://Objects/PlayerCamera.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Objects/SegmentChunks/HeadCapsule.tres" type="Shape2D" id=8]
+
+[sub_resource type="CircleShape2D" id=2]
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 600.0
+
+[node name="Barracuda" type="RigidBody2D"]
+collision_mask = 133
+mass = 1.2
+can_sleep = false
+angular_damp = 6.0
+script = ExtResource( 1 )
+front_pos = NodePath("FrontPos")
+rear_pos = NodePath("RearPos")
+top_sprite = NodePath("HeadTopSprite")
+jaw_node = NodePath("Jaw")
+head_collider = NodePath("HeadCollision")
+absorb_area = NodePath("AbsorbArea")
+tail = ExtResource( 5 )
+segment = ExtResource( 2 )
+joint = ExtResource( 3 )
+jaw_scene = ExtResource( 4 )
+
+[node name="HeadCollision" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -20 )
+rotation = 1.5708
+shape = ExtResource( 8 )
+
+[node name="FrontPos" type="Position2D" parent="."]
+position = Vector2( 44, 0 )
+
+[node name="RearPos" type="Position2D" parent="."]
+position = Vector2( -58, 0 )
+
+[node name="PlayerCamera" parent="." instance=ExtResource( 7 )]
+smoothing_enabled = false
+
+[node name="Jaw" type="RigidBody2D" parent="."]
+
+[node name="_Getting_Deleted" type="CollisionShape2D" parent="Jaw"]
+shape = SubResource( 2 )
+
+[node name="HeadTopSprite" type="Sprite" parent="."]
+z_index = 2
+texture = ExtResource( 6 )
+
+[node name="AbsorbArea" type="Area2D" parent="."]
+position = Vector2( 82, 0 )
+collision_layer = 2
+collision_mask = 2
+
+[node name="AbsorbArea" type="CollisionShape2D" parent="AbsorbArea"]
+shape = SubResource( 3 )
+
+[connection signal="body_entered" from="AbsorbArea" to="." method="_on_AbsorbArea_body_entered"]
+[connection signal="body_exited" from="AbsorbArea" to="." method="_on_AbsorbArea_body_exited"]
