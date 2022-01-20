@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 
-# Get components of barracude
+# Get components of barracuda
 var curr_speed: float
 
 # Physics stuff
@@ -15,8 +15,8 @@ export (NodePath) onready var jaw_node = get_node(jaw_node) as RigidBody2D  # In
 export (NodePath) onready var head_collider = get_node(head_collider) as CollisionShape2D
 export (NodePath) onready var absorb_area = get_node(absorb_area) as Area2D
 
-var segments: Node2D
-var joints: Node2D
+var segments_layer: Node2D
+var joints_layer: Node2D
 
 # Contruction stuff
 
@@ -28,6 +28,14 @@ export (PackedScene) var jaw_scene
 var rear_offset: Vector2
 
 # Spring stuff
+var modifying: bool
+var my_joint: BodyJoint
+var segment_rear: BodySegment
+var new_joint: BodyJoint
+var goal_global_position: Vector2
+var goal_global_rotation: float
+var new_segment: BodySegment
+
 var bite_torque_init: float
 var bite_torque: float
 var spring_length_init: float
@@ -35,17 +43,17 @@ var spring_length: float
 var flipped: bool
 var biteable: bool
 
-# Segment management
-var mark_for_removal: Array
-
 
 func _ready():
-	mark_for_removal = []
+	modifying = false
+	GameControl.barracuda_reference = self
+	GameControl.barracuda_layer = get_parent()
 	speed_limited = true
 	biteable = true
+	
 	# Get metas
-	segments = get_tree().get_current_scene().get_node("BarracudaCollection/BarracudaSegments")
-	joints = get_tree().get_current_scene().get_node("BarracudaCollection/BarracudaJoints")
+	segments_layer = get_parent().get_node("BarracudaSegments")
+	joints_layer = get_parent().get_node("BarracudaJoints")
 	bite_torque_init = 150000
 	bite_torque = bite_torque_init
 	
@@ -58,12 +66,12 @@ func _ready():
 	
 	rear_offset = rear_pos.global_position - global_position
 	
-	_add_segment(segment, "BasicTurret")
-	_rebuild_barracuda()
-	
+	_add_tail()
 	_add_jaw()
+	_add_init_segment(segment, "BasicTurret")
+#	_rebuild_barracuda()
 	
-	
+
 func _process(delta: float) -> void:
 	var heading_direction = linear_velocity.dot(Vector2(1, 0))
 
@@ -122,7 +130,7 @@ func _rebuild_barracuda():
 	var curr_segment = self
 	var new_segment
 	
-	for segment in GameProgression.segment_list:
+	for segment in GameControl.segment_list:
 		var segment_base_scene = segment[0]
 		var segment_type = segment[1]
 		new_segment = segment_base_scene.instance()
@@ -130,42 +138,66 @@ func _rebuild_barracuda():
 		
 		curr_segment = _add_and_connect_segment(new_segment, curr_attaching_joint)
 		curr_attaching_joint = _add_new_joint(curr_segment)
-		GameProgression.instanced_segments.append(curr_segment)
-		GameProgression.segment_joints_dict[curr_segment] = curr_attaching_joint
+		
 	# Then add tail
 	var tail_node = tail.instance()
-	_add_and_connect_segment(tail_node, curr_attaching_joint)
+	_add_and_connect_segment(tail_node, curr_attaching_joint, true)
 	
 	
 #### SEGMENT ADDITION
-
-func _add_segment(segment_to_add: PackedScene, type: String):
-	GameProgression.segment_list.push_front([segment_to_add, type])
+func _add_init_segment(segment_to_add: PackedScene, type: String):
+	var segment_properties = [segment_to_add, type]
+	GameControl.segment_list.push_back(segment_properties)
 	GameProgression.calc_new_properties()
+	
 	_rebuild_barracuda()
+	
+	
+func _add_segment(segment_to_add: PackedScene, type: String):
+	var segment_properties = [segment_to_add, type]
+	GameControl.segment_list.push_back(segment_properties)
+	GameProgression.calc_new_properties()
+	
+	GameControl.marked_for_addition[GameControl.instanced_segments[-1]] = segment_properties
+	print("DEBUG: NEW DICT ", GameControl.marked_for_addition)
+
+#
+#	if GameControl.instanced_segments.empty():
+#		GameControl.marked_for_addition[self] = segment_properties
+#	else:
+#		GameControl.marked_for_addition[GameControl.instanced_segments[-1]] = segment_properties
+#
+#	print(GameControl.marked_for_addition)
+#	GameControl.instanced_segments[-1].handle_addition(segment_to_add, type)
+	# TODO - HERE WE NEED TO CALL ADD ON THE REAR-MOST SEGMENT
+	
+#	_rebuild_barracuda()
 	
 
 func _add_new_joint(connecting_segment: RigidBody2D) -> RigidBody2D:
 	var attaching_joint = joint.instance()
-	joints.add_child(attaching_joint)
+	joints_layer.add_child(attaching_joint)
+	
 	attaching_joint.global_position = connecting_segment.global_position + connecting_segment.rear_offset - attaching_joint.front_offset
 	attaching_joint.front_joint.set_node_a(connecting_segment.get_path())
-#	attaching_joint.global_position = attaching_joint.global_position - (attaching_joint.global_position - global_position) / 5  # TRY THIS
+	
+	GameControl.segment_joints_dict[connecting_segment] = attaching_joint
 	return attaching_joint
 
 
-func _add_and_connect_segment(segment: RigidBody2D, attaching_joint: RigidBody2D) -> RigidBody2D:
-	segments.add_child(segment)
+func _add_and_connect_segment(segment: RigidBody2D, attaching_joint: RigidBody2D, head_or_tail=false) -> RigidBody2D:
+	segments_layer.add_child(segment)
 	segment.global_position = attaching_joint.global_position + attaching_joint.rear_offset + segment.rear_offset
 	attaching_joint.rear_joint.set_node_a(segment.get_path()) 
-	
+	if not head_or_tail:
+		GameControl.instanced_segments.append(segment)
 	return segment
 
 
 func _clear_segments_and_joints() -> void:
 	get_tree().call_group("barracuda_segments_and_joints", "queue_free")
-	GameProgression.instanced_segments = []
-	GameProgression.segment_joints_dict = {}
+	GameControl.instanced_segments = []
+	GameControl.segment_joints_dict = {}
 
 
 func _mark_remove_segment(segment: BodySegment) -> void:
@@ -174,11 +206,15 @@ func _mark_remove_segment(segment: BodySegment) -> void:
 
 func _add_jaw() -> void:
 	jaw_node.queue_free()
-	
 	jaw_node = jaw_scene.instance()
 	add_child(jaw_node)
+	
+	
+func _add_tail() -> void:
+	var head_joint = _add_new_joint(self)
+	var tail_instance = tail.instance()
+	var _tail_reference = _add_and_connect_segment(tail_instance, head_joint, true)
 
-#### SEGMENT SUBTRACTION
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("increase"):
@@ -188,7 +224,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("reset"):
 		pass
 	if event.is_action_pressed("temp_destroy_segment_2"):
-		var seg2 = GameProgression.instanced_segments[1]
+		var seg2 = GameControl.instanced_segments[0]
 		_mark_remove_segment(seg2)
 
 
@@ -214,3 +250,37 @@ func _on_AbsorbArea_body_entered(body: Node) -> void:
 func _on_AbsorbArea_body_exited(body: Node) -> void:
 	body.absorbing = false
 	body.target = null
+
+
+#func _handle_addition(segment_properties: Array) -> void:
+#	modifying = true
+#
+#	my_joint = GameControl.segment_joints_dict[self]
+#	segment_rear = GameControl.tail_reference
+#
+#	# Disconnect tail
+#	my_joint.rear_joint.set_node_a(NodePath(""))
+#
+#	goal_global_position = segment_rear.global_position
+#	goal_global_rotation = segment_rear.global_rotation
+#
+#	new_segment = segment_properties[0].instance()
+#	new_segment.set_type(segment_properties[1])
+#	segments_layer.add_child(new_segment)
+#	new_joint = joint.instance()
+#	joints_layer.add_child(new_joint)
+##	print("DEBUG: NEW JOINT ", new_joint)
+#	var tail_offset = (new_segment.front_pos - new_segment.rear_pos) + (new_joint.front_pos - new_joint.rear_pos)
+#
+#	# Disconnect and move tail
+#	my_joint.rear_joint.set_node_a(NodePath(""))
+#	print("DEBUG: GOAL POS ", goal_global_position)
+#	print("DEBUG: GOAL ROT ", goal_global_rotation)
+#	print("DEBUG: NEW POS ", goal_global_position - tail_offset.rotated(goal_global_rotation))
+#
+#	print("DEBUG: CURRENT GLOBAL POS ", segment_rear.global_position)
+#	segment_rear.global_position = goal_global_position - Vector2(0, 80) - tail_offset.rotated(goal_global_rotation)
+#	print("DEBUG: SET TO GLOBAL POS ", segment_rear.global_position)
+#
+#	modifying = false
+

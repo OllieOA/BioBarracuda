@@ -43,7 +43,6 @@ position = Vector2( 44, 0 )
 position = Vector2( -58, 0 )
 
 [node name="PlayerCamera" parent="." instance=ExtResource( 7 )]
-smoothing_enabled = false
 
 [node name="Jaw" type="RigidBody2D" parent="."]
 

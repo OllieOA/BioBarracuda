@@ -20,13 +20,13 @@ joint_sprite = NodePath("ConnectorSprite")
 texture = ExtResource( 1 )
 
 [node name="FrontJoint" type="PinJoint2D" parent="."]
-position = Vector2( 15, 0 )
+position = Vector2( 12, 0 )
 node_b = NodePath("..")
 bias = 0.9
 softness = 0.1
 
 [node name="RearJoint" type="PinJoint2D" parent="."]
-position = Vector2( -15, 0 )
+position = Vector2( -12, 0 )
 node_b = NodePath("..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

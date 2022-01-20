@@ -1,11 +1,13 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Assets/Barracuda/BaseBody.png" type="Texture" id=1]
 [ext_resource path="res://Objects/BodySegment.gd" type="Script" id=2]
+[ext_resource path="res://Assets/Juice/BubblesExplosion.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Objects/BodyJoint.tscn" type="PackedScene" id=4]
 
 [sub_resource type="CapsuleShape2D" id=1]
-radius = 40.0
-height = 10.0
+radius = 35.0
+height = 18.0
 
 [node name="BodySegment" type="RigidBody2D" groups=["barracuda_segments_and_joints"]]
 collision_mask = 129
@@ -16,6 +18,8 @@ front_pos_node = NodePath("FrontPos")
 rear_pos_node = NodePath("RearPos")
 body_sprite = NodePath("BodySegmentSprite")
 collision_box = NodePath("CollisionShape2D")
+joint = ExtResource( 4 )
+bubble_particles = ExtResource( 3 )
 
 [node name="BodySegmentSprite" type="Sprite" parent="."]
 scale = Vector2( 1.1, 1 )

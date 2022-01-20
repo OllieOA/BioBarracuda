@@ -1,10 +1,5 @@
 extends Node
 
-# Barracuda information
-var segment_list: Array
-var instanced_segments: Array
-var segment_joints_dict: Dictionary
-
 # Increasable stats
 var max_speed
 var max_speed_base := 1000.0
@@ -38,14 +33,12 @@ var angular_damp_value_base = 9
 var angular_damp_segment_factor = -0.1
 
 var n_segments: int
-
 var current_biomass: float = 0.0
 
 
 func _ready() -> void:
-	segment_list = []
-	instanced_segments = []
-	segment_joints_dict = {}
+	
+	calc_new_properties()
 	
 	linear_damp_value = linear_damp_value_base
 	angular_damp_value = angular_damp_value_base
@@ -54,9 +47,9 @@ func _ready() -> void:
 	
 	
 func calc_new_properties():
-	n_segments = len(segment_list)
+	n_segments = len(GameControl.segment_list)
 	
-	acceleration = 200 + (acceleration_base * len(GameProgression.segment_list) + acceleration_bonus_factor * acceleration_bonus_segments)
+	acceleration = 200 + acceleration_base * n_segments + acceleration_bonus_factor * acceleration_bonus_segments
 	max_speed = max_speed_base + max_speed_bonus_factor * max_speed_bonus_segments
 	dash_strength = dash_strength_base + dash_strength_bonus_factor * dash_strength_bonus_segments
 	dash_cooldown = dash_cooldown_base + dash_cooldown_bonus_factor * dash_cooldown_bonus_segments

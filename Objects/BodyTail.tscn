@@ -4,6 +4,7 @@
 [ext_resource path="res://Assets/Barracuda/Tail.png" type="Texture" id=2]
 
 [node name="BodyTail" instance=ExtResource( 1 )]
+is_tail = true
 
 [node name="BodySegmentSprite" parent="." index="0"]
 texture = ExtResource( 2 )
