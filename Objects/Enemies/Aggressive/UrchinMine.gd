@@ -35,7 +35,7 @@ func _spawn_projectiles():
 		curr_angle += deg_increment
 		new_vector = Vector2.ZERO + Vector2(spawn_radius, 0).rotated(deg2rad(curr_angle) + global_rotation)
 		
-		var projectile_instance = ProjectileProperties.new().lookup[ProjectileProperties.Type.URCHIN].instance()
+		var projectile_instance = load(ProjectileProperties.new().lookup[ProjectileProperties.Type.URCHIN]).instance()
 		var projectile_launch = global_position + new_vector
 		
 		if n != 0:

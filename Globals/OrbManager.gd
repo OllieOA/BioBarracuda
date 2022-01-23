@@ -1,14 +1,14 @@
 extends Node
 
-var orb_layer: Node2D
+var orb_layer_reference: Node2D
 var rng = RandomNumberGenerator.new()
 var xp_orb_scene = preload("res://Objects/Enemies/Passive/XPOrb.tscn")
 
 func _ready() -> void:
 	rng.randomize()
-	
-	# Get orb layer
-	orb_layer = get_tree().get_current_scene().get_node("OrbLayer")
+
+#	# Get orb layer
+#	orb_layer_reference = get_tree().get_current_scene().get_node("OrbLayer")
 
 
 func generate_orbs(value: float, spawn_position: Vector2):
@@ -25,18 +25,13 @@ func generate_orbs(value: float, spawn_position: Vector2):
 	
 	# Instantiate orbs with random impulse directions
 	for proportion in proportions:
-		var xp_orb = xp_orb_scene.instance()
-		xp_orb.value = proportion
-		orb_layer.add_child(xp_orb)
-		xp_orb.global_position = spawn_position
-		var rand_vector = Vector2(rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0)).normalized()
-		xp_orb.apply_central_impulse(rand_vector * rng.randf_range(100, 1000))
+		_instantiate_orb(proportion, spawn_position)
 
 
 func _instantiate_orb(value, pos):
 	var xp_orb = xp_orb_scene.instance()
 	xp_orb.value = value
-	orb_layer.add_child(xp_orb)
+	orb_layer_reference.add_child(xp_orb)
 	xp_orb.global_position = pos
 	
 	var rand_vector = Vector2(rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0)).normalized()

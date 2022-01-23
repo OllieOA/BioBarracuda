@@ -4,6 +4,7 @@ class_name Projectile
 export (Resource) var projectile_properties = projectile_properties as ProjectileProperties
 var direction: Vector2
 var shot_ready := false
+var shot_expended := false
 
 export (NodePath) onready var projectile_sprite = get_node(projectile_sprite) as Sprite 
 export (NodePath) onready var projectile_collider = get_node(projectile_collider) as CollisionShape2D
@@ -23,15 +24,23 @@ func _ready() -> void:
 	set_collision()
 
 	if play_shot_audio:
-		var random_pew_stream = projectile_properties.pew_noise_list[rng.randi_range(0, 2)]
+		var random_pew_stream = load(projectile_properties.pew_noise_list[rng.randi_range(0, 2)])
 		shot_noise.stream = random_pew_stream
 		shot_noise.play()
 	
-	var random_hit_stream = projectile_properties.hit_noise_list[rng.randi_range(0, 2)]
+	var random_hit_stream = load(projectile_properties.hit_noise_list[rng.randi_range(0, 2)])
 	hit_noise.stream = random_hit_stream
+	
+#	yield(get_tree().create_timer(projectile_properties.lifetime), "timeout")
+	var kill_timer = Timer.new()
+	kill_timer.set_wait_time(projectile_properties.lifetime)
+	kill_timer.autostart = true
+	add_child(kill_timer)
+	kill_timer.connect("timeout", self, "_kill_projectile", [self])
 
 
 func _physics_process(delta: float) -> void:
+	# cloud is #1 viewer - cloudwantdie, 2022-01-23
 	if shot_ready:
 		var velocity = direction * projectile_properties.speed
 		global_position += velocity * delta
@@ -58,7 +67,7 @@ func set_collision():
 
 func _on_Projectile_body_entered(body: Node) -> void:
 	if body.has_method("handle_hit"):
-		body.handle_hit(projectile_properties, body)
+		body.handle_hit(projectile_properties.damage, body)
 		_projectile_hit()
 	if body.is_in_group("CaveWalls"):
 		_projectile_hit()
@@ -67,10 +76,14 @@ func _on_Projectile_body_entered(body: Node) -> void:
 func _projectile_hit():
 	projectile_properties.speed = 0
 	projectile_sprite.hide()
-	projectile_collider.disabled = true
+	projectile_collider.call_deferred("set_disabled", true)
 	shot_particles.emitting = true
 	hit_noise.play()
 	
 	yield(hit_noise, "finished")
-	queue_free()
+	_kill_projectile(self)
 	
+	
+func _kill_projectile(node):
+	if node == self:
+		queue_free()

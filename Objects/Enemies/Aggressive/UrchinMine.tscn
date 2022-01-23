@@ -6,8 +6,10 @@
 
 [node name="UrchinMineEnemy" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
+biomass = 50.0
 attack_cooldown = 2.0
-allowed_states = [ 3, 0 ]
+allowed_states = [ 0, 1, 4 ]
+init_state = 1
 behaviour = 2
 
 [node name="Sprite" parent="." index="2"]

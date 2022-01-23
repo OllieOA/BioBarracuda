@@ -27,7 +27,7 @@ func _process(delta: float) -> void:
 		shoot()
 	
 	
-func _input(event: InputEvent):
+func _unhandled_input(event: InputEvent):
 	if is_in_group("player_segment"):
 		if event is InputEventMouseButton:
 			if event.is_action_pressed("shoot") and event.is_pressed():
@@ -38,12 +38,15 @@ func _input(event: InputEvent):
 
 func shoot():
 	if cooldown_timer.is_stopped():
-		for n in range(turret_properties.projectiles_to_spawn):
-			projectile_instance = _instantiate_bullet()
-			if n != 0:
-				projectile_instance.play_shot_audio = false
-			SignalBus.emit_signal("player_projectile_fired", projectile_instance)
-		cooldown_timer.start()
+		# Attempt to shoot
+		if GameProgression.current_energy >= turret_properties.shot_cost:
+			GameProgression.current_energy -= turret_properties.shot_cost
+			for n in range(turret_properties.projectiles_to_spawn):
+				projectile_instance = _instantiate_bullet()
+				if n != 0:
+					projectile_instance.play_shot_audio = false
+				SignalBus.emit_signal("player_projectile_fired", projectile_instance)
+			cooldown_timer.start()
 
 
 func _instantiate_bullet() -> Area2D:

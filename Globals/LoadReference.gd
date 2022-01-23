@@ -15,6 +15,22 @@ enum ThisIsAnEnumForWhatTheSegmentTypeCouldBe {
 
 # TODO fill preloads
 var lookup := [
-	preload("res://Objects/SegmentChunks/BasicTurret.tscn"),
-	preload("res://Objects/SegmentChunks/ShotgunTurret.tscn")
+	load("res://Objects/SegmentChunks/BasicTurret.tscn"),
+	load("res://Objects/SegmentChunks/ShotgunTurret.tscn")
+]
+
+var icon_lookup := [
+	load("res://Assets/Barracuda/SegmentTypes/BaseTurretICON.png"),
+	load("res://Assets/Barracuda/SegmentTypes/ShotgunTurretICON.png")
+]
+
+var segment_unlock = [
+	0,
+	0
+]
+
+
+var segment_tooltip = [
+	"Basic Turret\nReasonable range and fire rate",
+	"Spray Gun\nA short burst of projectiles"
 ]

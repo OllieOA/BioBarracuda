@@ -1,7 +1,8 @@
 extends RigidBody2D
 class_name BodySegment
 
-export var max_health := 200.0
+#export var max_health := 200.0
+export var max_health := 60.0
 
 export (NodePath) onready var front_pos_node = get_node(front_pos_node) as Position2D
 export (NodePath) onready var rear_pos_node = get_node(rear_pos_node) as Position2D
@@ -119,22 +120,43 @@ func _kill_segment() -> void:
 	var bubble_particles_instance = bubble_particles.instance()
 	GameControl.particles_layer.add_child(bubble_particles_instance)
 	bubble_particles_instance.global_position = global_position
-	my_joint.queue_free()
+	GameControl.instanced_segments.erase(self)
+	SignalBus.emit_signal("segment_killed")
+	if my_joint != null:
+		my_joint.queue_free()
 	queue_free()
 	
 
-func handle_hit(projectile_properties: ProjectileProperties, node):
+func mark_remove_segment(segment: BodySegment) -> void:
+	GameControl.marked_for_deletion.append(segment)
+
+
+func handle_hit(damage: float, node):
 	if node == self and not killed:
-		print("HANDLING HIT")
-		health.handle_hit(projectile_properties.damage)
-		flash_animator.play("DamageFlash")
+		if not is_tail:
+			health.handle_hit(damage)
+			flash_animator.play("DamageFlash")
+		else:
+			if not GameControl.barracuda_reference.killed:
+				GameControl.barracuda_reference.handle_hit(damage, self)
+
+
+func reset_health():
+	# Find our index
+	var my_index = GameControl.instanced_segments.find(self)
+	if GameControl.health_dict.has(my_index):
+		var my_health = GameControl.health_dict[my_index]
+		health.health = my_health
+
+
+func handle_heal():
+	health.handle_heal()
 
 
 func _handle_removal() -> void:
 	modifying = true
 	
 	if len(GameControl.instanced_segments) == 1:
-		SignalBus.emit_signal("barracuda_died", self)
 		_kill_segment()
 		return
 	

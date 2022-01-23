@@ -10,7 +10,7 @@ script = ExtResource( 3 )
 spread = 20
 lifetime = 0.5
 speed = 1500.0
-damage = 2.0
+damage = 4.0
 
 [node name="Projectile" instance=ExtResource( 1 )]
 modulate = Color( 0.745098, 0.027451, 0.027451, 1 )

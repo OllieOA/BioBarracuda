@@ -13,6 +13,7 @@ export (NodePath) onready var flash_animator = get_node(flash_animator) as Anima
 export (NodePath) onready var ai = get_node(ai) as Node
 export (NodePath) onready var health = get_node(health) as Node2D
 export (NodePath) onready var detection_area = get_node(detection_area) as Area2D
+export (NodePath) onready var give_up_area = get_node(give_up_area) as Area2D
 export (NodePath) onready var sight_line = get_node(sight_line) as RayCast2D
 export (Array, AIStateMachine.States) var allowed_states
 export (AIStateMachine.States) var init_state
@@ -31,6 +32,8 @@ var target_point: Vector2
 var drift_point_reached := true
 var drift_timer
 
+var health_regen_rate := 5
+
 
 func _ready() -> void:
 	randomize()
@@ -43,10 +46,11 @@ func _ready() -> void:
 	spawn_origin = global_position
 
 
-func handle_hit(projectile_properties: ProjectileProperties, node):
+func handle_hit(damage, node):
 	if node == self and not killed:
-		health.handle_hit(projectile_properties.damage)
+		health.handle_hit(damage)
 		flash_animator.play("DamageFlash")
+		ai.set_state(AIStateMachine.States.ENGAGE)
 
 
 func scan() -> bool:
@@ -58,14 +62,11 @@ func scan() -> bool:
 	return false
 
 
-#func _on_DetectionArea_body_entered(body: Node) -> void:
-#	if body.is_in_group("barracuda"):
-#		attack()
-#
-
 func _physics_process(delta: float) -> void:
+	if health.health < health.max_health:
+		health.health += health_regen_rate * delta
+	
 	if drift_active:
-		
 		if drift_timer == null:
 			drift_timer = Timer.new()
 			drift_timer.set_wait_time(10.0)

@@ -29,7 +29,7 @@ head_collider = NodePath("HeadCollision")
 absorb_area = NodePath("AbsorbArea")
 speed_noise = NodePath("SpeedNoise")
 tail = ExtResource( 5 )
-segment = ExtResource( 2 )
+segment_scene = ExtResource( 2 )
 joint = ExtResource( 3 )
 jaw_scene = ExtResource( 4 )
 

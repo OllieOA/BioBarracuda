@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Assets/Juice/EnergyBar_Bottom.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Juice/EnergyBar_Top.png" type="Texture" id=2]
+[ext_resource path="res://UI/EnergyBar.gd" type="Script" id=3]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://Assets/Font/ScienceFont.TTF"
+
+[sub_resource type="DynamicFont" id=2]
+size = 40
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 1 )
+
+[node name="EnergyBar" type="VBoxContainer"]
+margin_right = 200.0
+margin_bottom = 100.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+energy_bar = NodePath("TextureProgress")
+
+[node name="Label" type="Label" parent="."]
+margin_right = 200.0
+margin_bottom = 35.0
+custom_fonts/font = SubResource( 2 )
+text = "Energy:"
+
+[node name="TextureProgress" type="TextureProgress" parent="."]
+modulate = Color( 0, 0.623529, 1, 1 )
+margin_top = 39.0
+margin_right = 200.0
+margin_bottom = 51.0
+mouse_filter = 2
+texture_under = ExtResource( 1 )
+texture_progress = ExtResource( 2 )

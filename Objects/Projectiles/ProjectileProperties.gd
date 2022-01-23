@@ -22,21 +22,21 @@ enum Type {
 
 # TODO fill preloads
 var lookup = [
-#	load("res://Objects/Projectiles/BallProjectile.tscn"),
-	load("res://Objects/Projectiles/BasicProjectile.tscn"),
-	load("res://Objects/Projectiles/ShotgunPellet.tscn"),
-	load("res://Objects/Projectiles/UrchinProjectile.tscn")
+#	"res://Objects/Projectiles/BallProjectile.tscn",
+	"res://Objects/Projectiles/BasicProjectile.tscn",
+	"res://Objects/Projectiles/ShotgunPellet.tscn",
+	"res://Objects/Projectiles/UrchinProjectile.tscn"
 ]
 
 
 var hit_noise_list = [
-	load("res://Sounds/Hit-01.ogg"),
-	load("res://Sounds/Hit-02.ogg"),
-	load("res://Sounds/Hit-03.ogg")
+	"res://Sounds/Hit-01.ogg",
+	"res://Sounds/Hit-02.ogg",
+	"res://Sounds/Hit-03.ogg"
 ]
 
 var pew_noise_list = [
-	load("res://Sounds/Pew-01.ogg"),
-	load("res://Sounds/Pew-02.ogg"),
-	load("res://Sounds/Pew-03.ogg")
+	"res://Sounds/Pew-01.ogg",
+	"res://Sounds/Pew-02.ogg",
+	"res://Sounds/Pew-03.ogg"
 ]

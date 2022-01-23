@@ -69,7 +69,7 @@ _global_script_class_icons={
 [application]
 
 config/name="BioBarracuda"
-run/main_scene="res://Levels/BaseLevel.tscn"
+run/main_scene="res://Assets/Level/Title/TitleDump.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -80,9 +80,11 @@ ProjectileManager="*res://Globals/ProjectileManager.gd"
 OrbManager="*res://Globals/OrbManager.gd"
 GameControl="*res://Globals/GameControl.gd"
 LoadReference="*res://Globals/LoadReference.gd"
+SceneTransition="*res://Globals/SceneTransition.tscn"
 
 [display]
 
+mouse_cursor/custom_image="res://Assets/Juice/Crosshair.png"
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
 
@@ -165,6 +167,11 @@ reset={
 temp_destroy_segment_2={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":50,"unicode":0,"echo":false,"script":null)
+ ]
+}
+space={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":32,"unicode":0,"echo":false,"script":null)
  ]
 }
 

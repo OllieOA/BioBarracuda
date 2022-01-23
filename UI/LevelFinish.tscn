@@ -1,0 +1,91 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Assets/Juice/NinePatch_SelectionIcon_Click.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Juice/NinePatch_SelectionIcon_Base.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Juice/NinePatch_SelectionIcon_Mouseover.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Juice/UI_Tick.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Juice/UI_Cross.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Font/UI_Top_Font.tres" type="DynamicFont" id=6]
+
+[node name="LevelFinish" type="MarginContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -145.0
+margin_top = -65.0
+margin_right = 145.0
+margin_bottom = 65.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+self_modulate = Color( 0.541176, 0.541176, 0.541176, 1 )
+margin_right = 290.0
+margin_bottom = 130.0
+texture = ExtResource( 2 )
+patch_margin_left = 4
+patch_margin_top = 4
+patch_margin_right = 4
+patch_margin_bottom = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NinePatchRect"]
+margin_left = 23.0
+margin_top = 10.0
+margin_right = 267.0
+margin_bottom = 119.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="NinePatchRect/VBoxContainer"]
+margin_right = 244.0
+margin_bottom = 39.0
+custom_fonts/font = ExtResource( 6 )
+text = "Are you sure you want
+to proceed deeper?"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="NinePatchRect/VBoxContainer"]
+margin_left = 56.0
+margin_top = 43.0
+margin_right = 188.0
+margin_bottom = 109.0
+size_flags_horizontal = 6
+
+[node name="No" type="TextureButton" parent="NinePatchRect/VBoxContainer/HBoxContainer"]
+modulate = Color( 1, 0, 0, 1 )
+self_modulate = Color( 0.682353, 0.0352941, 0.0352941, 1 )
+margin_right = 64.0
+margin_bottom = 66.0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 1 )
+texture_hover = ExtResource( 3 )
+
+[node name="TextureRect" type="TextureRect" parent="NinePatchRect/VBoxContainer/HBoxContainer/No"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 5 )
+stretch_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Yes" type="TextureButton" parent="NinePatchRect/VBoxContainer/HBoxContainer"]
+modulate = Color( 0.14902, 1, 0, 1 )
+self_modulate = Color( 0.00392157, 0.631373, 0.0431373, 1 )
+margin_left = 68.0
+margin_right = 132.0
+margin_bottom = 66.0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 1 )
+texture_hover = ExtResource( 3 )
+
+[node name="TextureRect" type="TextureRect" parent="NinePatchRect/VBoxContainer/HBoxContainer/Yes"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 4 )
+stretch_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}

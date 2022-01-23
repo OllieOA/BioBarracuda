@@ -11,6 +11,7 @@ projectiles_to_spawn = 1
 shot_cooldown = 1.0
 impulse = 200.0
 rotation_factor = 0.5
+shot_cost = 8.0
 
 [node name="BaseTurret" instance=ExtResource( 1 )]
 projectile_scene = ExtResource( 3 )

@@ -1,0 +1,240 @@
+[gd_scene load_steps=17 format=2]
+
+[ext_resource path="res://Assets/Font/UI_Top_Font.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Assets/Juice/BiomassBar_Top.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Juice/BiomassBar_Border.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Juice/BiomassBar_Bottom.png" type="Texture" id=4]
+[ext_resource path="res://UI/ProgressBars.gd" type="Script" id=5]
+[ext_resource path="res://Assets/Juice/BiomassTick.png" type="Texture" id=6]
+[ext_resource path="res://Assets/Juice/UpgradeButton_Base.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Juice/UpgradeButton_Mouseover.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Juice/UpgradeButton_Click.png" type="Texture" id=9]
+[ext_resource path="res://Sounds/Select.ogg" type="AudioStream" id=10]
+[ext_resource path="res://Assets/Juice/NinePatch_SelectionIcon_Click.png" type="Texture" id=11]
+[ext_resource path="res://Assets/Juice/NinePatch_SelectionIcon_Base.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Juice/NinePatch_SelectionIcon_Mouseover.png" type="Texture" id=13]
+[ext_resource path="res://Assets/Juice/HeartIcon.png" type="Texture" id=14]
+[ext_resource path="res://Assets/Juice/NinePatch_SelectionIcon_Disabled.png" type="Texture" id=15]
+[ext_resource path="res://UI/ProgressBarsTheme.tres" type="Theme" id=16]
+
+[node name="ProgressBars" type="VBoxContainer"]
+pause_mode = 2
+margin_right = 820.0
+margin_bottom = 62.0
+rect_min_size = Vector2( 820, 0 )
+mouse_filter = 2
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+overall_progress = NodePath("OverallBar/TextureProgress")
+biomass_progress = NodePath("BiomassBar/TextureProgress")
+max_segments_label = NodePath("Label")
+tick_texture = NodePath("OverallBar/TextureProgress/TickContainer/TextureRect")
+click_sound = NodePath("UpgradeMarginContainer/UpgradeButton/AudioStreamPlayer")
+upgrade_button = NodePath("UpgradeMarginContainer/UpgradeButton")
+upgrade_container = NodePath("UpgradeSelector")
+option1_icon = NodePath("UpgradeSelector/HBoxContainer/Option1/Icon")
+option2_icon = NodePath("UpgradeSelector/HBoxContainer/Option2/Icon")
+option1_button = NodePath("UpgradeSelector/HBoxContainer/Option1")
+option2_button = NodePath("UpgradeSelector/HBoxContainer/Option2")
+
+[node name="OverallBar" type="HBoxContainer" parent="."]
+margin_right = 820.0
+margin_bottom = 18.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="OverallBar"]
+margin_right = 200.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 200, 18 )
+custom_fonts/font = ExtResource( 1 )
+text = "Level Progress:"
+align = 2
+
+[node name="TextureProgress" type="TextureProgress" parent="OverallBar"]
+margin_left = 204.0
+margin_right = 810.0
+margin_bottom = 18.0
+mouse_filter = 2
+texture_under = ExtResource( 4 )
+texture_over = ExtResource( 3 )
+texture_progress = ExtResource( 2 )
+tint_under = Color( 0.843137, 0.509804, 0.509804, 1 )
+tint_over = Color( 0.756863, 0.0392157, 0.0392157, 1 )
+tint_progress = Color( 0.803922, 0.0509804, 0.0509804, 1 )
+
+[node name="TickContainer" type="HBoxContainer" parent="OverallBar/TextureProgress"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+size_flags_horizontal = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="OverallBar/TextureProgress/TickContainer"]
+modulate = Color( 0.756863, 0.0392157, 0.0392157, 1 )
+margin_right = 3.0
+margin_bottom = 18.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 6 )
+
+[node name="BiomassBar" type="HBoxContainer" parent="."]
+margin_top = 22.0
+margin_right = 820.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="BiomassBar"]
+margin_right = 200.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 200, 18 )
+custom_fonts/font = ExtResource( 1 )
+text = "Biomass Consumed:"
+align = 2
+
+[node name="TextureProgress" type="TextureProgress" parent="BiomassBar"]
+margin_left = 204.0
+margin_right = 810.0
+margin_bottom = 18.0
+mouse_filter = 2
+texture_under = ExtResource( 4 )
+texture_over = ExtResource( 3 )
+texture_progress = ExtResource( 2 )
+tint_under = Color( 0.603922, 0.776471, 0.588235, 1 )
+tint_over = Color( 0.172549, 1, 0, 1 )
+tint_progress = Color( 0.109804, 0.788235, 0.168627, 1 )
+
+[node name="Label" type="Label" parent="."]
+margin_top = 44.0
+margin_right = 820.0
+margin_bottom = 59.0
+custom_fonts/font = ExtResource( 1 )
+text = "Max Segments: VAL"
+align = 2
+
+[node name="UpgradeMarginContainer" type="HBoxContainer" parent="."]
+margin_top = 63.0
+margin_right = 820.0
+margin_bottom = 115.0
+mouse_filter = 2
+
+[node name="UpgradeButton" type="TextureButton" parent="UpgradeMarginContainer"]
+self_modulate = Color( 0.109804, 0.788235, 0.168627, 1 )
+margin_right = 160.0
+margin_bottom = 52.0
+mouse_filter = 1
+texture_normal = ExtResource( 7 )
+texture_pressed = ExtResource( 9 )
+texture_hover = ExtResource( 8 )
+
+[node name="Label" type="Label" parent="UpgradeMarginContainer/UpgradeButton"]
+margin_right = 160.0
+margin_bottom = 52.0
+custom_fonts/font = ExtResource( 1 )
+text = "Upgrade"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UpgradeMarginContainer/UpgradeButton"]
+stream = ExtResource( 10 )
+
+[node name="UpgradeSelector" type="MarginContainer" parent="."]
+pause_mode = 2
+margin_top = 119.0
+margin_right = 820.0
+margin_bottom = 185.0
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UpgradeSelector"]
+pause_mode = 2
+margin_right = 820.0
+margin_bottom = 66.0
+
+[node name="Option1" type="TextureButton" parent="UpgradeSelector/HBoxContainer"]
+pause_mode = 2
+self_modulate = Color( 0.541176, 0.541176, 0.541176, 1 )
+margin_right = 64.0
+margin_bottom = 66.0
+hint_tooltip = "Test"
+mouse_filter = 1
+theme = ExtResource( 16 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 11 )
+texture_hover = ExtResource( 13 )
+texture_disabled = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Icon" type="TextureRect" parent="UpgradeSelector/HBoxContainer/Option1"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Option2" type="TextureButton" parent="UpgradeSelector/HBoxContainer"]
+pause_mode = 2
+self_modulate = Color( 0.541176, 0.541176, 0.541176, 1 )
+margin_left = 68.0
+margin_right = 132.0
+margin_bottom = 66.0
+hint_tooltip = "Test"
+mouse_filter = 1
+theme = ExtResource( 16 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 11 )
+texture_hover = ExtResource( 13 )
+texture_disabled = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Icon" type="TextureRect" parent="UpgradeSelector/HBoxContainer/Option2"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Heal" type="TextureButton" parent="UpgradeSelector/HBoxContainer"]
+pause_mode = 2
+self_modulate = Color( 0.541176, 0.541176, 0.541176, 1 )
+margin_left = 136.0
+margin_right = 200.0
+margin_bottom = 66.0
+hint_tooltip = "Heal all segments
+This will always be available"
+mouse_filter = 1
+theme = ExtResource( 16 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 11 )
+texture_hover = ExtResource( 13 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Icon" type="TextureRect" parent="UpgradeSelector/HBoxContainer/Heal"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 14 )
+stretch_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="UpgradeMarginContainer/UpgradeButton" to="." method="_on_UpgradeButton_pressed"]
+[connection signal="pressed" from="UpgradeSelector/HBoxContainer/Option1" to="." method="_on_Option1_pressed"]
+[connection signal="pressed" from="UpgradeSelector/HBoxContainer/Option2" to="." method="_on_Option2_pressed"]
+[connection signal="pressed" from="UpgradeSelector/HBoxContainer/Heal" to="." method="_on_Heal_pressed"]

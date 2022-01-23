@@ -5,6 +5,7 @@ class_name AIStateMachine
 signal state_changed(new_state)
 
 enum States {
+	PASSIVE_STATE,
 	DRIFT,
 	PATROL,  # Swim around more purposefully than drifting
 	RETURN,  # Return to spawn pos
@@ -38,14 +39,14 @@ var drift_point_reached := false
 
 
 func _ready() -> void:
-	connect("state_changed", self, "_handle_state_change")
+	self.connect("state_changed", self, "_handle_state_change")
 
 
 func init_ai(node, allowable_states, init_state):
 	allowed_states = allowable_states
 	rng.randomize()
 	owner_node = node
-	allowed_states = owner_node.allowed_states
+	allowed_states = allowable_states
 	set_state(init_state)
 
 
@@ -54,9 +55,14 @@ func set_state(new_state: int) -> void:
 		return
 	elif not allowed_states.has(new_state):
 		return 
-		
-	current_state = new_state
 	
+	if new_state == States.PASSIVE_STATE:
+		if States.PATROL in allowed_states:
+			new_state = States.PATROL
+		elif States.DRIFT in allowed_states:
+			new_state = States.DRIFT
+	
+	current_state = new_state
 	emit_signal("state_changed", current_state)
 
 
@@ -94,5 +100,10 @@ func _on_DetectionArea_body_entered(body: Node) -> void:
 		set_state(States.ENGAGE)
 
 
-func _handle_state_change():
-	print(current_state)
+func _handle_state_change(state):
+	pass
+
+
+func _on_GiveUpArea_body_exited(body: Node) -> void:
+	if body.is_in_group("barracuda"):
+		set_state(States.PASSIVE_STATE)

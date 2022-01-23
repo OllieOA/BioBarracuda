@@ -1,0 +1,105 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Assets/Level/Title/TitleDump.gd" type="Script" id=1]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://Assets/Font/ScienceFont.TTF"
+
+[sub_resource type="DynamicFont" id=2]
+size = 90
+outline_size = 3
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 1 )
+
+[sub_resource type="Animation" id=4]
+resource_name = "Pulse"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 0.0941176, 0.890196, 0.156863, 1 ), Color( 0.0941176, 0.890196, 0.156863, 0.392157 ), Color( 0.0941176, 0.890196, 0.156863, 1 ) ]
+}
+
+[sub_resource type="DynamicFont" id=3]
+size = 20
+outline_size = 3
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 1 )
+
+[node name="Node2D" type="Control"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_top = 50.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+pulse_animator = NodePath("Label2/AnimationPlayer")
+
+[node name="Label" type="Label" parent="."]
+modulate = Color( 0.0941176, 0.890196, 0.156863, 1 )
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -264.5
+margin_right = 264.5
+margin_bottom = 159.0
+custom_fonts/font = SubResource( 2 )
+text = "Bio
+Barracuda"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="."]
+modulate = Color( 0.0941176, 0.890196, 0.156863, 0.532746 )
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -288.0
+margin_top = 430.0
+margin_right = 288.0
+margin_bottom = 589.0
+custom_fonts/font = SubResource( 2 )
+text = "You Win!"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Label2"]
+anims/Pulse = SubResource( 4 )
+
+[node name="Label3" type="Label" parent="."]
+modulate = Color( 0.0941176, 0.890196, 0.156863, 1 )
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -291.0
+margin_top = 177.0
+margin_right = 285.0
+margin_bottom = 336.0
+custom_fonts/font = SubResource( 3 )
+text = "Thanks for playing!
+
+I am looking forward to completing this game as
+a post-jam version. 
+
+Follow on itch.io or Twitch
+to keep up to date.
+
+A big thanks to those who popped into the twitch
+stream for support and assistance."
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

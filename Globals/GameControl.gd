@@ -4,6 +4,7 @@ extends Node
 var segment_list: Array
 var instanced_segments: Array
 var segment_joints_dict: Dictionary
+var health_dict: Dictionary
 
 # Segment management information
 var marked_for_deletion: Array
@@ -23,6 +24,8 @@ var navigation_layer: Navigation2D
 func _ready() -> void:
 	marked_for_deletion = []
 	marked_for_addition = {}
+	
+	health_dict = {}
 	
 	segment_list = []
 	instanced_segments = []

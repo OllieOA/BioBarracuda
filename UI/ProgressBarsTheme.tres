@@ -1,0 +1,35 @@
+[gd_resource type="Theme" load_steps=7 format=2]
+
+[ext_resource path="res://Assets/Juice/NinePatch_SelectionIcon_Base.png" type="Texture" id=1]
+
+[sub_resource type="DynamicFontData" id=4]
+font_path = "res://Assets/Font/ScienceFont.TTF"
+
+[sub_resource type="DynamicFont" id=5]
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 4 )
+
+[sub_resource type="StyleBoxTexture" id=6]
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+texture = ExtResource( 1 )
+region_rect = Rect2( 0, 0, 64, 66 )
+margin_left = 4.24867
+margin_right = 4.12269
+margin_top = 4.24867
+modulate_color = Color( 0.627451, 0.627451, 0.627451, 1 )
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://Assets/Font/ScienceFont.TTF"
+
+[sub_resource type="DynamicFont" id=2]
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 1 )
+
+[resource]
+default_font = SubResource( 2 )
+TooltipLabel/colors/font_color = Color( 1, 1, 1, 1 )
+TooltipLabel/fonts/font = SubResource( 5 )
+TooltipPanel/styles/panel = SubResource( 6 )
