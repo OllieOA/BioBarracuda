@@ -2,15 +2,15 @@
 ___
 ### Character
 - [ ] Generate art assets for barracuda
-	- [ ] Placeholder Art
-	- [ ] Head (split jaw and head piece for eating)
-	- [ ] Tail
-	- [ ] Base body segment
-	- [ ] Base body segment with fin
+	- [x] Placeholder Art
+	- [x] Head (split jaw and head piece for eating)
+	- [x] Tail
+	- [x] Base body segment
+	- [x] Base body segment with fin
 	- [ ] Ability segment overlay
 		- [ ] TBD
-- [ ] Generate Character Controller
-	- [ ] Move the head (and possibly move segments along the curve with same force)
+- [x] Generate Character Controller
+	- [x] Move the head (and possibly move segments along the curve with same force)
 
 
 ___
@@ -47,22 +47,25 @@ ___
 
 2022-01-20
 - [ ] Refactor enemies into node composition
-- [ ] Refactor projectiles/turrets into custom resources
+- [x] Refactor projectiles/turrets into custom resources
 - [ ] Start custom resource AI
 - [x] Fix the loss of index 1 and -1 segments
 - [ ] Refactor adding segment into a similar method as destroy
 
 2022-01-21
-- [ ] Building out levels (tileset)
-- [ ] UI elements
-- [ ] Minimap (optional)
+- [ ] CATCH UP
+- [ ] Handle death (i.e. last segment)
+- [ ] Vary projectile speed
 
 2022-01-22
 - [ ] SFX design and recording
 - [ ] Music
-- [ ] GOAL All levels implemented/playable (with basic/prototype enemies)
+- [ ] GOAL One levels implemented/playable (with basic/prototype enemies)
 
 2022-01-23
+- [ ] Building out levels (tileset)
+- [ ] UI elements
+- [ ] Minimap (optional)
 - [ ] GOAL Permutation of existing mechanics (i.e. increase enemies)
 
 - [ ] **SUBMIT**

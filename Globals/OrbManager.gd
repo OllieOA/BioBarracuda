@@ -2,7 +2,7 @@ extends Node
 
 var orb_layer: Node2D
 var rng = RandomNumberGenerator.new()
-var xp_orb_scene = preload("res://Objects/Passive/XPOrb.tscn")
+var xp_orb_scene = preload("res://Objects/Enemies/Passive/XPOrb.tscn")
 
 func _ready() -> void:
 	rng.randomize()

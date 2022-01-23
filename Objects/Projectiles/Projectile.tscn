@@ -1,0 +1,64 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Objects/Projectiles/Projectile.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Barracuda/SegmentTypes/BaseBullet.png" type="Texture" id=2]
+[ext_resource path="res://Objects/Projectiles/BaseProjectileProperties.tres" type="Resource" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 12.75, 3 )
+
+[sub_resource type="Curve" id=3]
+max_value = 3.0
+_data = [ Vector2( 0, 3 ), 0.0, 0.0, 0, 0, Vector2( 0.722826, 3 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=4]
+curve = SubResource( 3 )
+
+[sub_resource type="ParticlesMaterial" id=2]
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 40.0
+initial_velocity_random = 1.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+radial_accel = 40.0
+radial_accel_random = 1.0
+scale_curve = SubResource( 4 )
+
+[node name="Projectile" type="Area2D"]
+collision_layer = 20
+collision_mask = 267
+script = ExtResource( 1 )
+projectile_properties = ExtResource( 3 )
+projectile_sprite = NodePath("BulletSprite")
+projectile_collider = NodePath("BulletCollision")
+shot_particles = NodePath("BulletCollision/Shot")
+hit_noise = NodePath("Hit")
+shot_noise = NodePath("Shot")
+
+[node name="BulletSprite" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+
+[node name="BulletCollision" type="CollisionShape2D" parent="."]
+position = Vector2( 7, 0 )
+shape = SubResource( 1 )
+
+[node name="Shot" type="Particles2D" parent="BulletCollision"]
+position = Vector2( 14, 0 )
+emitting = false
+amount = 3
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+process_material = SubResource( 2 )
+
+[node name="Hit" type="AudioStreamPlayer2D" parent="."]
+volume_db = -8.0
+bus = "SFX"
+
+[node name="Shot" type="AudioStreamPlayer2D" parent="."]
+volume_db = -8.0
+
+[connection signal="body_entered" from="." to="." method="_on_Projectile_body_entered"]

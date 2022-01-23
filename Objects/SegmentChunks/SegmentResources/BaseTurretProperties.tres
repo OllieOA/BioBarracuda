@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Objects/SegmentChunks/SegmentResources/TurretProperties.gd" type="Script" id=1]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource( 1 )
+projectiles_to_spawn = 10
+shot_cooldown = 1.8
+impulse = 800.0
+rotation_factor = 0.1

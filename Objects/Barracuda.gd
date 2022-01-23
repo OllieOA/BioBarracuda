@@ -14,6 +14,7 @@ export (NodePath) onready var top_sprite = get_node(top_sprite) as Sprite
 export (NodePath) onready var jaw_node = get_node(jaw_node) as RigidBody2D  # Initialised only
 export (NodePath) onready var head_collider = get_node(head_collider) as CollisionShape2D
 export (NodePath) onready var absorb_area = get_node(absorb_area) as Area2D
+export (NodePath) onready var speed_noise = get_node(speed_noise) as AudioStreamPlayer
 
 var segments_layer: Node2D
 var joints_layer: Node2D
@@ -68,12 +69,12 @@ func _ready():
 	
 	_add_tail()
 	_add_jaw()
-	_add_init_segment(segment, "BasicTurret")
-#	_rebuild_barracuda()
+	_add_init_segment(segment, LoadReference.ThisIsAnEnumForWhatTheSegmentTypeCouldBe.BASIC_TURRET)
 	
 
 func _process(delta: float) -> void:
 	var heading_direction = linear_velocity.dot(Vector2(1, 0))
+#	var heading_speed = 
 
 	if heading_direction < -150 and not top_sprite.flip_v:
 		SignalBus.emit_signal("barracuda_head_left")
@@ -120,7 +121,8 @@ func _integrate_forces(state: Physics2DDirectBodyState) -> void:
 func _rebuild_barracuda():
 	# Queuefree all of the segments
 	_clear_segments_and_joints()
-	global_rotation_degrees = 0
+#	var heading_vector = front_pos - rear_pos
+	global_rotation = 0
 	
 	# Create the head joint
 	var head_joint = _add_new_joint(self)
@@ -145,7 +147,7 @@ func _rebuild_barracuda():
 	
 	
 #### SEGMENT ADDITION
-func _add_init_segment(segment_to_add: PackedScene, type: String):
+func _add_init_segment(segment_to_add: PackedScene, type: int):
 	var segment_properties = [segment_to_add, type]
 	GameControl.segment_list.push_back(segment_properties)
 	GameProgression.calc_new_properties()
@@ -153,13 +155,12 @@ func _add_init_segment(segment_to_add: PackedScene, type: String):
 	_rebuild_barracuda()
 	
 	
-func _add_segment(segment_to_add: PackedScene, type: String):
+func _add_segment(segment_to_add: PackedScene, type: int):
 	var segment_properties = [segment_to_add, type]
 	GameControl.segment_list.push_back(segment_properties)
 	GameProgression.calc_new_properties()
 	
-	GameControl.marked_for_addition[GameControl.instanced_segments[-1]] = segment_properties
-	print("DEBUG: NEW DICT ", GameControl.marked_for_addition)
+	_rebuild_barracuda()
 
 #
 #	if GameControl.instanced_segments.empty():
@@ -178,7 +179,7 @@ func _add_new_joint(connecting_segment: RigidBody2D) -> RigidBody2D:
 	var attaching_joint = joint.instance()
 	joints_layer.add_child(attaching_joint)
 	
-	attaching_joint.global_position = connecting_segment.global_position + connecting_segment.rear_offset - attaching_joint.front_offset
+	attaching_joint.global_position = (connecting_segment.global_position + connecting_segment.rear_offset - attaching_joint.front_offset)
 	attaching_joint.front_joint.set_node_a(connecting_segment.get_path())
 	
 	GameControl.segment_joints_dict[connecting_segment] = attaching_joint
@@ -187,7 +188,7 @@ func _add_new_joint(connecting_segment: RigidBody2D) -> RigidBody2D:
 
 func _add_and_connect_segment(segment: RigidBody2D, attaching_joint: RigidBody2D, head_or_tail=false) -> RigidBody2D:
 	segments_layer.add_child(segment)
-	segment.global_position = attaching_joint.global_position + attaching_joint.rear_offset + segment.rear_offset
+	segment.global_position = (attaching_joint.global_position + attaching_joint.rear_offset + segment.rear_offset)
 	attaching_joint.rear_joint.set_node_a(segment.get_path()) 
 	if not head_or_tail:
 		GameControl.instanced_segments.append(segment)
@@ -218,11 +219,11 @@ func _add_tail() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("increase"):
-		_add_segment(segment, "BasicTurret")
+		_add_segment(segment, LoadReference.ThisIsAnEnumForWhatTheSegmentTypeCouldBe.SPRAY_TURRET)
 	if event.is_action_pressed("bite") and biteable:
 		_bite()
 	if event.is_action_pressed("reset"):
-		pass
+		_rebuild_barracuda()
 	if event.is_action_pressed("temp_destroy_segment_2"):
 		var seg2 = GameControl.instanced_segments[0]
 		_mark_remove_segment(seg2)
@@ -243,13 +244,15 @@ func _bite():
 
 
 func _on_AbsorbArea_body_entered(body: Node) -> void:
-	body.absorbing = true
-	body.target = absorb_area
+	if body.is_in_group("orbs"):
+		body.absorbing = true
+		body.target = absorb_area
 
 
 func _on_AbsorbArea_body_exited(body: Node) -> void:
-	body.absorbing = false
-	body.target = null
+	if body.is_in_group("orbs"):
+		body.absorbing = false
+		body.target = null
 
 
 #func _handle_addition(segment_properties: Array) -> void:

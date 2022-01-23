@@ -5,6 +5,7 @@ signal barracuda_head_right
 signal barracuda_bite
 
 signal player_projectile_fired
+signal enemy_projectile_fired
 
 signal enemy_killed
 signal barracuda_dead(node)

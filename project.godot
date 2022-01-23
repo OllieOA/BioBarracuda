@@ -9,6 +9,21 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node",
+"class": "AIStateMachine",
+"language": "GDScript",
+"path": "res://Objects/Enemies/AIStateMachine.gd"
+}, {
+"base": "RigidBody2D",
+"class": "BaseEnemy",
+"language": "GDScript",
+"path": "res://Objects/Enemies/BaseEnemy.gd"
+}, {
+"base": "Node2D",
+"class": "BaseTurret",
+"language": "GDScript",
+"path": "res://Objects/SegmentChunks/BaseTurret.gd"
+}, {
 "base": "Node2D",
 "class": "BodyJoint",
 "language": "GDScript",
@@ -22,7 +37,17 @@ _global_script_classes=[ {
 "base": "Area2D",
 "class": "Projectile",
 "language": "GDScript",
-"path": "res://Objects/Projectile.gd"
+"path": "res://Objects/Projectiles/Projectile.gd"
+}, {
+"base": "Resource",
+"class": "ProjectileProperties",
+"language": "GDScript",
+"path": "res://Objects/Projectiles/ProjectileProperties.gd"
+}, {
+"base": "Resource",
+"class": "TurretProperties",
+"language": "GDScript",
+"path": "res://Objects/SegmentChunks/SegmentResources/TurretProperties.gd"
 }, {
 "base": "Camera2D",
 "class": "ZoomingCamera2D",
@@ -30,16 +55,21 @@ _global_script_classes=[ {
 "path": "res://Objects/PlayerCamera.gd"
 } ]
 _global_script_class_icons={
+"AIStateMachine": "",
+"BaseEnemy": "",
+"BaseTurret": "",
 "BodyJoint": "",
 "BodySegment": "",
 "Projectile": "",
+"ProjectileProperties": "",
+"TurretProperties": "",
 "ZoomingCamera2D": ""
 }
 
 [application]
 
 config/name="BioBarracuda"
-run/main_scene="res://Levels/Test.tscn"
+run/main_scene="res://Levels/BaseLevel.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -49,6 +79,7 @@ GameProgression="*res://Globals/GameProgression.gd"
 ProjectileManager="*res://Globals/ProjectileManager.gd"
 OrbManager="*res://Globals/OrbManager.gd"
 GameControl="*res://Globals/GameControl.gd"
+LoadReference="*res://Globals/LoadReference.gd"
 
 [display]
 
@@ -136,6 +167,16 @@ temp_destroy_segment_2={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":50,"unicode":0,"echo":false,"script":null)
  ]
 }
+
+[layer_names]
+
+2d_physics/layer_1="player_head"
+2d_physics/layer_2="player_segments"
+2d_physics/layer_3="player_projectiles"
+2d_physics/layer_4="enemies"
+2d_physics/layer_5="enemy_projectiles"
+2d_physics/layer_6="orbs"
+2d_physics/layer_9="cave_walls"
 
 [physics]
 

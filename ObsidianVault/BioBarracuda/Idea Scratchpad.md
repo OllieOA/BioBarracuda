@@ -111,3 +111,13 @@ Two stage boss
 - Stage 1 - static fight with turrets on an outer shell
 - Stage 2 - rocket claws
 - Stage 3 - crab body that pulses
+
+
+
+
+
+Instance Segment - read from SegmentTypes resource
+
+Repurpose barracuda as enemy
+
+

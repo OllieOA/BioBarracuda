@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Objects/Enemies/BaseEnemy.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Assets/Enemies/UrchinMine_Spritesheet.png" type="Texture" id=2]
+[ext_resource path="res://Objects/Enemies/Aggressive/UrchinMine.gd" type="Script" id=3]
+
+[node name="UrchinMineEnemy" instance=ExtResource( 1 )]
+script = ExtResource( 3 )
+attack_cooldown = 2.0
+allowed_states = [ 3, 0 ]
+behaviour = 2
+
+[node name="Sprite" parent="." index="2"]
+texture = ExtResource( 2 )
+hframes = 2
+
+[node name="Health" parent="." index="6"]
+position = Vector2( 0, -57 )
+scale = Vector2( 0.6, 1 )

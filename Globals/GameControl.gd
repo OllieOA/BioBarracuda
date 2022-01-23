@@ -18,6 +18,7 @@ var barracuda_layer: Node2D
 var particles_layer: Node2D
 var projectile_layer: Node2D
 
+var navigation_layer: Navigation2D
 
 func _ready() -> void:
 	marked_for_deletion = []

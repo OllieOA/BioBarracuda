@@ -1,13 +1,18 @@
 extends RigidBody2D
 class_name BodySegment
 
+export var max_health := 200.0
+
 export (NodePath) onready var front_pos_node = get_node(front_pos_node) as Position2D
 export (NodePath) onready var rear_pos_node = get_node(rear_pos_node) as Position2D
 export (NodePath) onready var body_sprite = get_node(body_sprite) as Sprite
 export (NodePath) onready var collision_box = get_node(collision_box) as CollisionShape2D
+export (NodePath) onready var health = get_node(health) as Node2D
+export (NodePath) onready var flash_animator = get_node(flash_animator) as AnimationPlayer
 
+var tail_scene
 export (PackedScene) var joint
-export (PackedScene) onready var bubble_particles
+export (PackedScene) var bubble_particles
 
 var front_offset
 var rear_offset
@@ -16,7 +21,7 @@ var rear_pos
 
 # Segment information properties
 var segment_scenes: Dictionary
-var my_type: String
+var my_type: int
 var base_velocity: Vector2
 
 # Segment handling properties
@@ -32,7 +37,6 @@ var goal_global_position: Vector2
 var goal_global_rotation: float
 
 var head_node: RigidBody2D
-var tail_node: BodySegment
 
 var new_segment: BodySegment
 var new_joint: BodyJoint
@@ -40,12 +44,19 @@ var segments_layer: Node2D
 var joints_layer: Node2D
 
 export (bool) var is_tail := false
+var killed := false
 
 
 func _ready() -> void:
 	
+	health.max_health = max_health
+	health.my_body = self
+	health.init_health()
+	
 	if is_tail:
 		GameControl.tail_reference = self
+	else:
+		tail_scene = load("res://Objects/BodyTail.tscn")
 	
 	front_pos = front_pos_node.position
 	rear_pos = rear_pos_node.position
@@ -58,18 +69,21 @@ func _ready() -> void:
 	
 	set_damp()
 	
-	# Build the type
-	segment_scenes = {
-		"BasicTurret": preload("res://Objects/SegmentChunks/BaseTurret.tscn")
-	}
-	
-	if my_type != "":
-		var segment_power = segment_scenes[my_type].instance()
-		segment_power.init(1.0, Color("ecff43"))
-		add_child(segment_power)
+	if not is_tail:
+#	var segment_power = segment_scenes[my_type].instance()
+		call_deferred("_add_segment_power")
+#		var segment_power = SegmentTypes.lookup[my_type].instance()
+#		add_child(segment_power)
+#		segment_power.add_to_group("player_segment")
 		
 	segments_layer = GameControl.barracuda_layer.get_node("BarracudaSegments")
 	joints_layer = GameControl.barracuda_layer.get_node("BarracudaJoints")
+
+
+func _add_segment_power():
+	var segment_power = LoadReference.lookup[my_type].instance()
+	add_child(segment_power)
+	segment_power.add_to_group("player_segment")
 
 
 func _integrate_forces(state: Physics2DDirectBodyState) -> void:
@@ -77,11 +91,6 @@ func _integrate_forces(state: Physics2DDirectBodyState) -> void:
 		if GameControl.marked_for_deletion[0] == self and not modifying:
 			GameControl.marked_for_deletion.erase(self)
 			_handle_removal()
-	
-	if GameControl.marked_for_addition.has(self) and not modifying:
-		var segment_properties: Array = GameControl.marked_for_addition[self]
-		GameControl.marked_for_addition.erase(self)
-		_handle_addition(segment_properties)
 	
 	if state.linear_velocity.length() > GameProgression.max_speed and GameControl.barracuda_reference.speed_limited:
 		state.linear_velocity = state.linear_velocity.normalized() * GameProgression.max_speed
@@ -109,12 +118,18 @@ func _kill_segment() -> void:
 	collision_box.disabled = true
 	var bubble_particles_instance = bubble_particles.instance()
 	GameControl.particles_layer.add_child(bubble_particles_instance)
-	print("BUBBLES!")
 	bubble_particles_instance.global_position = global_position
 	my_joint.queue_free()
 	queue_free()
 	
-	
+
+func handle_hit(projectile_properties: ProjectileProperties, node):
+	if node == self and not killed:
+		print("HANDLING HIT")
+		health.handle_hit(projectile_properties.damage)
+		flash_animator.play("DamageFlash")
+
+
 func _handle_removal() -> void:
 	modifying = true
 	
@@ -162,30 +177,21 @@ func _handle_removal() -> void:
 	modifying = false
 
 
-func _handle_addition(segment_properties: Array) -> void:
-	print("ADDING SEGMENT")
-	modifying = true
+func _add_and_connect_segment(segment: BodySegment, attaching_joint: BodyJoint, head_or_tail=false) -> BodySegment:
+	segments_layer.add_child(segment)
+	segment.global_position = attaching_joint.global_position + attaching_joint.rear_offset + segment.rear_offset
+	attaching_joint.rear_joint.set_node_a(segment.get_path()) 
+	if not head_or_tail:
+		GameControl.instanced_segments.append(segment)
+	return segment
+
+
+func _add_new_joint(connecting_segment: RigidBody2D) -> BodyJoint:
+	var attaching_joint = joint.instance()
+	joints_layer.add_child(attaching_joint)
 	
-	my_joint = GameControl.segment_joints_dict[self]
-	segment_rear = GameControl.tail_reference
+	attaching_joint.global_position = connecting_segment.global_position + connecting_segment.rear_offset - attaching_joint.front_offset
+	attaching_joint.front_joint.set_node_a(connecting_segment.get_path())
 	
-	goal_global_position = segment_rear.global_position
-	goal_global_rotation = segment_rear.global_rotation
-	
-	new_segment = segment_properties[0].instance()
-	new_segment.set_type(segment_properties[1])
-	new_joint = joint.instance()
-	
-	segments_layer.add_child(new_segment)
-	joints_layer.add_child(new_joint)
-	
-	new_joint.front_joint.set_node_a(new_segment.get_path())
-	
-	var tail_offset = (new_segment.front_pos - new_segment.rear_pos) + (new_joint.front_pos - new_joint.rear_pos)
-	
-	# Disconnect and move tail
-	my_joint.rear_joint.set_node_a(NodePath(""))
-	segment_rear.global_position = goal_global_position + tail_offset.rotated(goal_global_rotation)
-	
-	modifying = false
-	
+	GameControl.segment_joints_dict[connecting_segment] = attaching_joint
+	return attaching_joint
